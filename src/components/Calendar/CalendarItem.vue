@@ -5,6 +5,7 @@
        'holiday': itemDate.day() === 6 || itemDate.day() === 0
   }">
     <div class="number">{{itemDate.date()}}</div>
+    <div class="number numberMobile">{{itemDate.format('DD MMMM YYYY dd')}}</div>
     <div class="events">
         <div class="event" :class="event.type"  v-for="event in sortArray(item.events)" :key="event.id">
             <div :class="event.type"  class="eventText">
@@ -29,7 +30,7 @@ export default {
     },
     methods: {
         sortArray(arr) {
-            return arr.sort((a, b) => a.date > b.date ? 1 : -1)
+            return arr.slice().sort((a, b) => a.date >= b.date ? 1 : -1)
         }
     },
 }
@@ -37,7 +38,7 @@ export default {
 
 <style lang="scss">
 .calendar-item {
-    height: 125px;
+    min-height: 125px;
     box-shadow: 1px 1px 2px rgba(168, 168, 168, 0.25);
     color: rgb(114, 116, 116);
     padding: 10px;
@@ -84,6 +85,8 @@ export default {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
+    transition: all .3s;
+    border-radius: 5px;
 }
 
 .eventText {
@@ -99,7 +102,9 @@ export default {
     z-index: 5;
     transition: all .3s;
 }
-
+.numberMobile{
+    display: none;
+}
 
 .eventText:hover {
     width: fit-content;
@@ -119,5 +124,22 @@ export default {
 .green {
     background: rgb(230, 245, 234);
     color: rgb(88, 209, 101);
+}
+@media (max-width: 768px){
+    .number{
+        display: none;
+    }
+    .numberMobile{
+        display: block;
+    }
+    .event:hover{
+        height: auto;
+    }
+    .eventText:hover{
+        position: relative;
+        overflow: visible;
+        white-space: unset;
+        z-index: 50;
+    }
 }
 </style>

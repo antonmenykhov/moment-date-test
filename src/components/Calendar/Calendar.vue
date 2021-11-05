@@ -9,9 +9,14 @@
         <button class="nextMonth" @click="getCalendarSheet(currentMonth.add(1,'month'))"></button>
 
     </div>
-    <div class="calendar-wrapper">
-        <div class="calendar-label" :class="{'holidayLabel': $moment(item.date).day() === 6 || $moment(item.date).day() === 0}" v-for="item,i in currentCalendar.slice(0,7)" :key="i">{{$moment(item.date).format('dddd') }}</div>
-        <calendar-item v-for="item in currentCalendar" :key="item.date" :item="item" :now="now"></calendar-item>
+    <div class="calendar-body">
+        <div class="calendar-wrapper labels">
+            <div class="calendar-label" :class="{'holidayLabel': $moment(item.date).day() === 6 || $moment(item.date).day() === 0}" v-for="item,i in currentCalendar.slice(0,7)" :key="i">{{$moment(item.date).format('dddd') }}</div>
+        </div>
+        <div class="calendar-wrapper">
+
+            <calendar-item v-for="item in currentCalendar" :key="item.date" :item="item" :now="now"></calendar-item>
+        </div>
     </div>
 </div>
 </template>
@@ -48,8 +53,8 @@ export default {
             calendar.forEach(day => {
                 let dayWithEvents = {};
                 dayWithEvents.date = day.date;
-                dayWithEvents.events = this.events.filter(event => 
-                    this.$moment(event.date).format('DD/MM/YYYY') ==  (this.$moment(day.date)).format('DD/MM/YYYY')
+                dayWithEvents.events = this.events.filter(event =>
+                    this.$moment(event.date).format('DD/MM/YYYY') == (this.$moment(day.date)).format('DD/MM/YYYY')
                 )
                 midCalendar.push(dayWithEvents)
             });
@@ -166,5 +171,26 @@ export default {
     border-radius: 30px;
     padding: 30px;
 
+}
+@media (max-width: 880px){
+    .calendar-label{
+        font-size: 12px;
+    }
+}
+@media (max-width: 768px){
+    .calendar-wrapper{
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .labels{
+        display: none;
+    }
+}
+@media (max-width: 500px){
+    .calendar{
+        padding: 10px;
+    }
+    .controls{
+        justify-content: center;
+    }
 }
 </style>
