@@ -23,7 +23,7 @@ export default {
                 {
                     id: 2,
                     name: 'второе событие второе событие второе событие',
-                    date: '2021-11-05T20:00',
+                    date: '2021-11-06T20:00',
                     type: 'green'
                 },
                 {
@@ -72,6 +72,7 @@ export default {
 }
 body{
   background: rgb(245,245,245);
+  overflow-x: hidden;
 }
 #app {
     

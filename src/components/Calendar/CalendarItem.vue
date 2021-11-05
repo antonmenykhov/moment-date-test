@@ -7,8 +7,8 @@
     <div class="number">{{itemDate.date()}}</div>
     <div class="number numberMobile">{{itemDate.format('DD MMMM YYYY dd')}}</div>
     <div class="events">
-        <div class="event" :class="event.type"  v-for="event in sortArray(item.events)" :key="event.id">
-            <div :class="event.type"  class="eventText">
+        <div :id="'wrap'+event.id" class="event" :class="event.type" v-for="event in sortArray(item.events)" :key="event.id">
+            <div :id="'event'+event.id" v-on:mouseover="onHover(event.id)" v-on:mouseleave="onLeave(event.id)" :class="event.type" class="eventText">
                 {{$moment(event.date).format('HH:mm')}} {{event.name}}
             </div>
         </div>
@@ -31,6 +31,37 @@ export default {
     methods: {
         sortArray(arr) {
             return arr.slice().sort((a, b) => a.date >= b.date ? 1 : -1)
+        },
+        //Смещает событие если оно выходит за рамки календаря + немного анимации
+        onHover(id) {
+
+            let offsetCalendar = document.getElementById('calendarBody').getBoundingClientRect().right
+            let element = document.getElementById('event' + id);
+            let width = element.scrollWidth
+            let wrapper = document.getElementById('wrap' + id)
+            let offsetItem = element.getBoundingClientRect().left
+            element.style.width = "100%"
+            wrapper.style.overflow = "visible"
+            element.style.width = width + "px"
+            
+            if (offsetItem + width > offsetCalendar) {
+                let delta = offsetItem + width - offsetCalendar;
+                element.style.transform = "translateX(-" + delta + "px)"
+
+            }
+        },
+        //Возвращает обратно
+        onLeave(id) {
+            let element = document.getElementById('event' + id);
+            let wrapper = document.getElementById('wrap' + id)
+            element.style.transform = "unset"
+
+            element.style.width = "100%"
+            element.style.overflow = "hidden"
+            setTimeout(() => {
+
+                wrapper.style.overflow = "hidden"
+            }, 300)
         }
     },
 }
@@ -40,7 +71,7 @@ export default {
 .calendar-item {
     min-height: 125px;
     box-shadow: 1px 1px 2px rgba(168, 168, 168, 0.25);
-    color: rgb(114, 116, 116);
+    color: rgb(46, 46, 46);
     padding: 10px;
     border-radius: 5px;
     margin: 1px;
@@ -78,7 +109,7 @@ export default {
 
 .event {
     box-sizing: border-box;
-    height: 20px;
+    height: 24px;
     position: relative;
     font-size: 14px;
     font-weight: 500;
@@ -87,10 +118,12 @@ export default {
     margin-bottom: 8px;
     transition: all .3s;
     border-radius: 5px;
+    overflow: hidden;
+
 }
 
 .eventText {
-  
+    transition: all .3s;
     border-radius: 5px;
     padding: 3px 4px;
     box-sizing: border-box;
@@ -100,15 +133,15 @@ export default {
     white-space: nowrap;
     position: absolute;
     z-index: 5;
-    transition: all .3s;
 }
-.numberMobile{
+
+.numberMobile {
     display: none;
 }
 
 .eventText:hover {
-    width: fit-content;
     overflow: visible;
+    z-index: 50;
 }
 
 .orange {
@@ -125,17 +158,22 @@ export default {
     background: rgb(230, 245, 234);
     color: rgb(88, 209, 101);
 }
-@media (max-width: 768px){
-    .number{
+
+@media (max-width: 768px) {
+    .number {
         display: none;
     }
-    .numberMobile{
+
+    .numberMobile {
         display: block;
     }
-    .event:hover{
+
+    .event:hover {
         height: auto;
+
     }
-    .eventText:hover{
+
+    .eventText:hover {
         position: relative;
         overflow: visible;
         white-space: unset;
