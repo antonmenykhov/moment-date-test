@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
+import moment from 'moment'
+import 'moment/locale/ru';
+moment.locale('ru')
+Vue.prototype.$moment = moment
 
 Vue.config.productionTip = false
 
