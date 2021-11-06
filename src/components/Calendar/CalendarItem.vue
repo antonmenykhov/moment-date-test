@@ -1,8 +1,8 @@
 <template>
 <div class="calendar-item" :class="{
-      'prevDay': itemDate.isBefore(now) ,
-       'current': itemDate.isSame(now) ,
-       'holiday': itemDate.day() === 6 || itemDate.day() === 0
+        'prevDay': itemDate.isBefore(now) ,
+        'current': itemDate.isSame(now) ,
+        'holiday': itemDate.day() === 6 || itemDate.day() === 0
   }">
     <div class="number">{{itemDate.date()}}</div>
     <div class="number numberMobile">{{itemDate.format('DD MMMM YYYY dd')}}</div>
@@ -34,19 +34,24 @@ export default {
         },
         //Смещает событие если оно выходит за рамки календаря + немного анимации
         onHover(id) {
-
-            let offsetCalendar = document.getElementById('calendarBody').getBoundingClientRect().right
             let element = document.getElementById('event' + id);
-            let width = element.scrollWidth
             let wrapper = document.getElementById('wrap' + id)
-            let offsetItem = element.getBoundingClientRect().left
-            element.style.width = "100%"
-            wrapper.style.overflow = "visible"
-            element.style.width = width + "px"
-            
-            if (offsetItem + width > offsetCalendar) {
-                let delta = offsetItem + width - offsetCalendar;
-                element.style.transform = "translateX(-" + delta + "px)"
+            if (document.body.clientWidth > 768) {
+                let offsetCalendar = document.getElementById('calendarBody').getBoundingClientRect().right
+                let width = element.scrollWidth
+                let offsetItem = element.getBoundingClientRect().left
+                element.style.width = "100%"
+                wrapper.style.overflow = "visible"
+                element.style.width = width + 5 + "px"
+
+                if (offsetItem + width > offsetCalendar) {
+                    let delta = offsetItem + width - offsetCalendar;
+                    element.style.transform = "translateX(-" + delta + "px)"
+
+                }
+            } else {
+                let height = element.scrollHeight;
+                wrapper.style.height = height + 'px'
 
             }
         },
@@ -54,14 +59,17 @@ export default {
         onLeave(id) {
             let element = document.getElementById('event' + id);
             let wrapper = document.getElementById('wrap' + id)
-            element.style.transform = "unset"
+            if (document.body.clientWidth > 768) {
+                element.style.transform = "unset"
+                element.style.width = "100%"
+                element.style.overflow = "hidden"
+                setTimeout(() => {
 
-            element.style.width = "100%"
-            element.style.overflow = "hidden"
-            setTimeout(() => {
-
-                wrapper.style.overflow = "hidden"
-            }, 300)
+                    wrapper.style.overflow = "hidden"
+                }, 300)
+            } else {
+                wrapper.style.height = '24px'
+            }
         }
     },
 }
@@ -160,6 +168,10 @@ export default {
 }
 
 @media (max-width: 768px) {
+    .calendar-item {
+        min-height: 75px;
+    }
+
     .number {
         display: none;
     }
@@ -168,14 +180,8 @@ export default {
         display: block;
     }
 
-    .event:hover {
-        height: auto;
-
-    }
-
     .eventText:hover {
         position: relative;
-        overflow: visible;
         white-space: unset;
         z-index: 50;
     }

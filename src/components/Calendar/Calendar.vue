@@ -9,9 +9,9 @@
         <button class="nextMonth" @click="getCalendarSheet(currentMonth.add(1,'month'))"></button>
     </div>
     <div class="calendarBody" id="calendarBody">
-        <div class="calendar-wrapper labels">
+        <div class="calendar-wrapper labels">                   <!-- Вывожу названия дней циклом, для того чтобы можно было использовать другие локали -->
             <div class="calendar-label" :class="{'holidayLabel': $moment(item.date).day() === 6 || $moment(item.date).day() === 0}" v-for="item,i in currentCalendar.slice(0,7)" :key="i">{{$moment(item.date).format('dddd') }}</div>
-        </div>
+        </div>                      
         <div class="calendar-wrapper">
             <calendar-item v-for="item in currentCalendar" :key="item.date" :item="item" :now="now"></calendar-item>
         </div>
@@ -46,7 +46,7 @@ export default {
     },
 
     methods: {
-        getCurrentEvents(calendar) { //Получаю события только для текущего листа
+        getCurrentEvents(calendar) { //Получаю события только для текущего листа и добавляю их в массив с текущими датами
             let midCalendar = [];
             calendar.forEach(day => {
                 let dayWithEvents = {};
